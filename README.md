@@ -33,7 +33,6 @@
   - Table structural design for historical data
 
 ## History
-
 - 2021.04.06 - Start project with [JaeHun Hur](https://github.com/koni114)
 - 2021.04.07 - Join [DongHoon Kang](https://github.com/donghoon-khan)
 - 2021.04.07 - Join [taeWoong Kim](https://github.com/poi2507)
