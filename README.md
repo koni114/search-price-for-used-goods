@@ -5,7 +5,7 @@
 `NOTE: robots.txt 확인 후 허용된 사이트만 크롤링합니다.`
 
 ## Goal
-
+![img](https://github.com/koni114/search-price-for-used-goods/blob/master/img/architecture.png)
 - 약 1TB정도의 데이터를 기반으로 data pipeline 설계 및 제작
 - 스토리지에 저장된 데이터를 기술 통계 계산 및 데이터 시각화에 필요한 통계 데이터 생성
 - MLlib을 이용한 ML 모델 구축
@@ -31,6 +31,19 @@
   - How to save/inquiry data based on OLAP effectively?
   - What kind of way for saving data? streamming? batch?
   - Table structural design for historical data
+
+## project check List
+- do you consider it a real service and consider operating it? 
+- Have you received user feedback and tried to improve performance/usability or add new features?
+- do you systematically manage discovered bugs and issues?
+- Have you tried constantly refactoring your code and applying design patterns?
+- Have you considered the trade-off between better design and faster development?
+- Have you tried automating the tasks involved in repetitive modifications and deployments?
+- Have you tried implementing things that cannot be implemented only with language or framework?
+- Have you felt the problems or limitations of the library or framework you used and tried to improve it?
+- Have you considered an analysis or test tool to maintain the quality of your code or product?
+- Have you ever thought about how to effectively collaborate with others?
+
 
 ## History
 - 2021.04.06 - Start project with [JaeHun Hur](https://github.com/koni114)
