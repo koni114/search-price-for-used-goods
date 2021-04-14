@@ -1,5 +1,4 @@
 # Search price for used apple goods
-
 [당근마켓](https://www.daangn.com/), [중고나라](https://www.joongna.com/), [번개장터](https://m.bunjang.co.kr/)에 게시된 애플 제품을 크롤링하여 시세를 시각화 하고, 사용자에게 원하는 정보를 제공
 
 `NOTE: robots.txt 확인 후 허용된 사이트만 크롤링합니다.`
@@ -12,8 +11,11 @@
 - github을 통한 소스 형상관리
 - Data visualization
 
+## Version
+- Python 3.7
+- mongoDB 4.4.4
+ 
 ## Mission
-
 - 분산 클러스터링을 위한 도커 서버 4대 생성 및 분산 클러스터링 수행
 - spark framework를 통한 분산 클러스터링 컴퓨팅 수행
 - data pipeline의 design pattern은 특정 소프트웨어 아키텍처 준수
