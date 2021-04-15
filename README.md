@@ -36,10 +36,14 @@
 
 ## project check List
 - do you consider it a real service and consider operating it? 
+  - python logging library를 통한 로깅 시스템 적용
+    - logging.yaml file 을 통해 개발 단계, 테스트 단계, 가동 단계 별 logging level을 쉽게 적용하도록 하는 구조 적용
+    - logger 단위 설정을 어떻게 할 것인가? --> 모듈 vs 객체 인스턴스 vs 클래스 vs 함수 
 - Have you received user feedback and tried to improve performance/usability or add new features?
 - do you systematically manage discovered bugs and issues?
 - Have you tried constantly refactoring your code and applying design patterns?
 - Have you considered the trade-off between better design and faster development?
+  - mongoDB data modeling시, 최대한 빠른 개발을 위하여 collection 단위를 중고거래 site 별로 나눔
 - Have you tried automating the tasks involved in repetitive modifications and deployments?
 - Have you tried implementing things that cannot be implemented only with language or framework?
 - Have you felt the problems or limitations of the library or framework you used and tried to improve it?

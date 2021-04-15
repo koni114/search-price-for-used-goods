@@ -3,7 +3,7 @@ from selenium import webdriver  # - 동적으로 화면을 이동하여 크롤�
 from selenium.webdriver.chrome.options import Options
 import pandas as pd
 import time as t
-
+import os
 
 # - 초기 설정. configuration 내용.
 # - 크롬 드라이버 설치 필요.
@@ -11,7 +11,7 @@ def start_option():
     options = Options()
     userAgent = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36"
     options.add_argument(f'user-agent={userAgent}')
-    chrome_path = r"/Users/taewoong/Documents/coding/chromedriver"
+    chrome_path = r"/usr/local/bin/chromedriver"
     brower = webdriver.Chrome(chrome_options=options, executable_path=chrome_path)
     brower.maximize_window()
     return brower
@@ -43,8 +43,10 @@ def Crawling(product, date):
             start = 1
         else:
             start = 2
+        # j = 1
         for j in range(start, len(brower.find_elements_by_class_name("sc-fdqjUm"))):  # - page 길이
             brower.find_elements_by_class_name("sc-fdqjUm")[j].click()  # - page 클릭
+            # i = 1
             for i in range(100):
                 try:
                     t.sleep(1)  # - 페이지를 넘길 때, term을 주어야 데이터를 정상적이게 가져 올 수 있음
@@ -111,3 +113,7 @@ if __name__ == "__main__":
     date = input("수집 범위: ")
     data = Crawling(product, date)
     data.to_csv("bunjang.csv", mode='w')
+
+
+product = ['애플']
+date = None

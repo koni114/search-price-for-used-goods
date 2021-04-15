@@ -1,7 +1,6 @@
 import common
 from crawlingdata import bunjangCrawlingdata
 
-
 if __name__ == "__main__":
 
     import os
@@ -18,7 +17,7 @@ if __name__ == "__main__":
     bunjang_search_window_xpath = config_info['bunjang']['search_window_xpath']
     bunjang_search_window_xpath_icon_xpath = config_info['bunjang']['search_window_xpath_icon_xpath']
 
-    product = ['애플워치']
+    product = ['애플']
 
     # logger setting
     bunjang_logger = common.set_logger(log_file_path='./log', log_file_name='bunjang.log', level='ERROR')
@@ -36,4 +35,4 @@ if __name__ == "__main__":
     browser = bunjang.set_crawling_option()
     bunjang.set_crawling_main_page(browser, product)
     crawling_data = bunjang.get_crawling_data(product=product, browser=browser)
-    crawling_data.to_csv("bunjang.csv", mode='w')
+    crawling_data.to_csv(product + "_", "bunjang.csv", mode='w')

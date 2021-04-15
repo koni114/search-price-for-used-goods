@@ -73,15 +73,17 @@ class bunjangCrawlingdata(crawlingdata):
         bunjang_data = pd.DataFrame(columns=bunjang_crawling_contents)
 
         page_num = 1
+        limit_num = 1000
         while True:
+            check_number = 0
             t.sleep(3)
             if page_num == 1:
                 start = 1
             else:
                 start = 2
-            for j in range(start, 2):  # len(browser.find_elements_by_class_name("sc-fdqjUm"))):  # - page 길이
+            for j in range(start, len(browser.find_elements_by_class_name("sc-fdqjUm"))):
                 browser.find_elements_by_class_name("sc-fdqjUm")[j].click()  # - page 클릭
-                for page_items_num in range(10):
+                for page_items_num in range(100):
                     try:
                         bunjang_data_dict = self.get_crawling_data_items(browser, transaction_num=page_items_num)
                         row_names = str(page_num) + "_" + str(page_items_num)
@@ -99,5 +101,10 @@ class bunjangCrawlingdata(crawlingdata):
                         for i in range(len(bunjang_data_dict)):
                             bunjang_data.loc[row_names, bunjang_crawling_contents[i]] = bunjang_data_dict[i]
                         print(bunjang_data_dict[0], " : ", page_items_num)
+
+                        if check_number == limit_num:
+                            break
+
+                        check_number += 1
             break
         return bunjang_data
