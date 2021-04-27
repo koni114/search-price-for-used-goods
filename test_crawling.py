@@ -65,6 +65,7 @@ def Crawling(product, date):
                     attention = soup.find_all('div', attrs={'class': 'sc-fQfKYo kctXcC'})[1].get_text()  # - 관심
                     time = soup.find_all('div', attrs={'class': 'sc-fQfKYo kctXcC'})[2].get_text()  # - 시간
                     content = soup.find('div', attrs={'class': 'sc-huKLiJ bfuCPC'}).get_text()  # - 본문 내용
+
                     data_bunjang.loc[str(page_num) + "_" + str(i), 'title'] = title
                     data_bunjang.loc[str(page_num) + "_" + str(i), 'price'] = price
                     data_bunjang.loc[str(page_num) + "_" + str(i), 'location'] = location

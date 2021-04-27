@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 import time as t
 
 
-class crawlingdata(object):
+class CrawlingData(object):
     # class variable
 
     def __init__(self, user_agent, chrome_path, root_url, search_window_xpath, search_window_xpath_icon_xpath):
@@ -31,15 +31,20 @@ class crawlingdata(object):
         elem.click()
 
 
-class bunjangCrawlingdata(crawlingdata):
-    bunjang_cols = ['title', 'price', 'time', 'content', 'like', 'Attention', 'location']
+class BunjangCrawlingData(CrawlingData):
+    bunjang_cols = ['transaction_id','category','title', 'price',
+                    'time', 'main_contents', 'like', 'click_number',
+                    'seller_location', 'item_image', 'user_id', 'number_of_seller_product', 'collect_time']
 
-    def __init__(self, user_agent, chrome_path, root_url, search_window_xpath, search_window_xpath_icon_xpath):
-        super(bunjangCrawlingdata, self).__init__(user_agent,
+    def __init__(self, user_agent, chrome_path, root_url, search_window_xpath,
+                 search_window_xpath_icon_xpath, page_num, logger):
+        super(BunjangCrawlingData, self).__init__(user_agent,
                                                   chrome_path,
                                                   root_url,
                                                   search_window_xpath,
                                                   search_window_xpath_icon_xpath)
+        self.page_num = page_num
+        self.logger = logger
 
     def get_crawling_data_items(self, browser, transaction_num):
 
@@ -62,7 +67,7 @@ class bunjangCrawlingdata(crawlingdata):
         content = soup.find('div', attrs={'class': 'sc-huKLiJ bfuCPC'}).get_text()  # - 본문 내용
 
         bunjang_data = [title, price, time, content, like, attention, location]
-        print(bunjang_data)
+        self.logger.info(bunjang_data[:2])
         browser.back()
 
         return bunjang_data
@@ -72,39 +77,43 @@ class bunjangCrawlingdata(crawlingdata):
         bunjang_crawling_contents = ['title', 'price', 'time', 'content', 'like', 'Attention', 'location']
         bunjang_data = pd.DataFrame(columns=bunjang_crawling_contents)
 
-        page_num = 1
-        limit_num = 1000
+        page_num = self.page_num
+        limit_num = 1
+
         while True:
-            check_number = 0
             t.sleep(3)
             if page_num == 1:
                 start = 1
             else:
-                start = 2
+                start = 2  # - 11 page 부터 < 존재하므로, 2부터 시작
+            # j = 1
             for j in range(start, len(browser.find_elements_by_class_name("sc-fdqjUm"))):
                 browser.find_elements_by_class_name("sc-fdqjUm")[j].click()  # - page 클릭
                 for page_items_num in range(100):
+                    limit_num += 1
                     try:
                         bunjang_data_dict = self.get_crawling_data_items(browser, transaction_num=page_items_num)
                         row_names = str(page_num) + "_" + str(page_items_num)
                         for i in range(len(bunjang_data_dict)):
                             bunjang_data.loc[row_names, bunjang_crawling_contents[i]] = bunjang_data_dict[i]
                     except Exception as e:
-                        print(e)
-                        super(bunjangCrawlingdata, self).set_crawling_main_page(browser, product)
-                        t.sleep(3)
-                        browser.find_elements_by_class_name("sc-fdqjUm")[j].click()
-                        browser.execute_script('window.scrollTo(0, 0)')
-                        t.sleep(3)
-                        bunjang_data_dict = self.get_crawling_data_items(browser, transaction_num=page_items_num)
-                        row_names = str(page_num) + "_" + str(page_items_num)
-                        for i in range(len(bunjang_data_dict)):
-                            bunjang_data.loc[row_names, bunjang_crawling_contents[i]] = bunjang_data_dict[i]
-                        print(bunjang_data_dict[0], " : ", page_items_num)
+                        try:
+                            super(BunjangCrawlingData, self).set_crawling_main_page(browser, product)
+                            t.sleep(3)
+                            browser.find_elements_by_class_name("sc-fdqjUm")[j].click()
+                            browser.execute_script('window.scrollTo(0, 0)')
+                            t.sleep(3)
+                            bunjang_data_dict = self.get_crawling_data_items(browser, transaction_num=page_items_num)
+                            row_names = str(page_num) + "_" + str(page_items_num)
+                            for i in range(len(bunjang_data_dict)):
+                                bunjang_data.loc[row_names, bunjang_crawling_contents[i]] = bunjang_data_dict[i]
+                            print(bunjang_data_dict[0], " : ", page_items_num)
+                        except Exception as e:
+                            self.logger.error(e)
+                            return bunjang_data
 
-                        if check_number == limit_num:
-                            break
+                    print("item number : ", limit_num)
+                    if limit_num == 100:
+                        return bunjang_data
 
-                        check_number += 1
-            break
         return bunjang_data

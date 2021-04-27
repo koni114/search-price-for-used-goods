@@ -41,6 +41,9 @@
     - logger 단위 설정을 어떻게 할 것인가? --> 모듈 vs 객체 인스턴스 vs 클래스 vs 함수 
 - Have you received user feedback and tried to improve performance/usability or add new features?
 - do you systematically manage discovered bugs and issues?
+  - 특별한 디자인 패턴은 적용하지 않음. why? 
+    디자인패턴 적용시 이해하기가 굉장히 어려우므로, 단순한 구조로 설계
+  - class구조만 설계하여 적용 예정
 - Have you tried constantly refactoring your code and applying design patterns?
 - Have you considered the trade-off between better design and faster development?
   - mongoDB data modeling시, 최대한 빠른 개발을 위하여 collection 단위를 중고거래 site 별로 나눔

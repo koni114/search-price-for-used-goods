@@ -2,8 +2,13 @@
 crl_user_agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36
 crl_chrome_path: /usr/local/bin/chromedriver
 
+# db
+mongodb_uri: mongodb://localhost:27017
+mongodb_db: transaction
+
 # 번개 장터
 crl_bunjang_root_url: https://www.bunjang.co.kr/
 bunjang:
     search_window_xpath: //*[@id='root']/div/div/div[3]/div[1]/div[1]/div[1]/div[1]/input
     search_window_xpath_icon_xpath: //*[@id='root']/div/div/div[3]/div[1]/div[1]/div[1]/div[1]/a/img
+

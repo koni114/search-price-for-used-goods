@@ -8,18 +8,14 @@ import os
 
 def get_yaml_file(file_path=".", file_name="config.yaml", yaml_type="s"):
     """get yaml file variable to dict
-
     Args:
         file_path
         file_name
         yaml_type : s, d
-
     Returns
         dict type object
-
     Example:
         >>>
-
     """
     import yaml
 
@@ -45,12 +41,7 @@ def get_yaml_file(file_path=".", file_name="config.yaml", yaml_type="s"):
         return conf_dict
 
 
-log_file_path='./log'
-log_file_name='test.log'
-level='ERROR'
-
 def set_logger(log_file_path='./log', log_file_name='test.log', level='ERROR'):
-    import logging
     import logging.handlers
     import os
 
@@ -64,9 +55,9 @@ def set_logger(log_file_path='./log', log_file_name='test.log', level='ERROR'):
         os.mkdir(log_file_path)
 
     log = logging.getLogger(log_file_name.split(".")[0])
-    formatter = logging.Formatter('[$(asctime)s][%(levelname)s|%(filename)s;%(lineno)s] >> %(message)s')
+    formatter = logging.Formatter('[%(asctime)s][%(levelname)s|%(filename)s;%(lineno)s] >> %(message)s')
     file_max_byte = 1024 * 1024 * 10
-    file_handler = logging.handlers.RotatingFileHandler(filename=log_file_name,
+    file_handler = logging.handlers.RotatingFileHandler(filename=os.path.join(log_file_path, log_file_name),
                                                         maxBytes=file_max_byte,
                                                         backupCount=5)
     file_handler.setFormatter(formatter)
