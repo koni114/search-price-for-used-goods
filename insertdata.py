@@ -38,11 +38,14 @@ if __name__ == "__main__":
 
         collection_name = 'bunjang'
         bunjang_csvfile_list = [bool for bool in file_list if collection_name in bool]
-        filename = bunjang_csvfile_list[0]
         for filename in bunjang_csvfile_list:
             data = pd.read_csv(os.path.join(bunjang_data_path, filename))
             data = data.drop('Unnamed: 0', axis=1)
-            db.bunjang.insert_many(data.to_dict('records'))
+            try:
+                db.bunjang.insert_many(data.to_dict('records'))
+            except Exception as e:
+                insert_data_logger.error("MongoClient insert_many error!")
+                insert_data_logger.error(e)
 
 
 
