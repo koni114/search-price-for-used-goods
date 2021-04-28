@@ -1,6 +1,10 @@
 import common
 from crawlingdata import BunjangCrawlingData
 
+
+import metacode
+
+
 if __name__ == "__main__":
 
     import os
@@ -16,9 +20,10 @@ if __name__ == "__main__":
     # 번개 장터 크롤링
     bunjang_root_url = config_info["crl_bunjang_root_url"]
 
-    product = ['애플워치']
+    product = ['맥북프로']
+    product_meta_code = metacode.PRODUCT_CODE['맥북프로']
 
-    for page_num in range(2, 11):
+    for page_num in range(1, 2):
         print("## page_num", page_num)
         if not page_num == 1:
             bunjang_root_url = bunjang_root_url + "/search/products?q=" + product[0] + "&&order=score&page=" + str(page_num)
@@ -28,9 +33,9 @@ if __name__ == "__main__":
 
 
         # logger setting
-        bunjang_logger = common.set_logger(log_file_path='/Users/heojaehun/gitRepo/search-price-for-used-goods/log',
-                                           log_file_name='bunjang.log',
-                                           level='DEBUG')
+        bunjang_logger = common.set_logger(log_file_path=logging_info['bunjang_crawling']['log_file_path'],
+                                           log_file_name=logging_info['bunjang_crawling']['log_file_name'],
+                                           level=logging_info['bunjang_crawling']['log_level'])
 
         try:
             bunjang = BunjangCrawlingData(user_agent=crl_user_agent,
@@ -46,5 +51,5 @@ if __name__ == "__main__":
 
         browser = bunjang.set_crawling_option()
         bunjang.set_crawling_main_page(browser, product)
-        crawling_data = bunjang.get_crawling_data(product=product, browser=browser)
+        crawling_data = bunjang.get_crawling_data(product=product, browser=browser, product_meta_code=product_meta_code)
         crawling_data.to_csv('./data/' + str(page_num) + "_" + product[0] + "_" + "bunjang.csv", mode='w')

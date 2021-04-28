@@ -4,7 +4,7 @@ from selenium.webdriver.chrome.options import Options
 import pandas as pd
 import time as t
 import os
-
+product = ['애플워치']
 # - 초기 설정. configuration 내용.
 # - 크롬 드라이버 설치 필요.
 def start_option():
@@ -43,10 +43,10 @@ def Crawling(product, date):
             start = 1
         else:
             start = 2
-        # j = 1
+        j = 1
         for j in range(start, len(brower.find_elements_by_class_name("sc-fdqjUm"))):  # - page 길이
             brower.find_elements_by_class_name("sc-fdqjUm")[j].click()  # - page 클릭
-            # i = 1
+            i = 1
             for i in range(100):
                 try:
                     t.sleep(1)  # - 페이지를 넘길 때, term을 주어야 데이터를 정상적이게 가져 올 수 있음
@@ -55,6 +55,8 @@ def Crawling(product, date):
                     soup = BeautifulSoup(brower.page_source, "lxml")  # - page source parser를 통해 source 가져옴
                     title = soup.find('div', attrs={'class': 'sc-fIIFii iptAEp'}).get_text()  # - title class
                     price = soup.find('div', attrs={'class': 'sc-frudsx kGPCet'}).get_text()  # - price class
+                    seller_id = soup.find('div', attrs={'class':"sc-kBMPsl ivBHfZ"}).get_text()  # - price class
+
                     # - 지역인증 여부에 따라 class가 달라지므로, 이에 따른 로직 적용
                     try:
                         location = soup.find('div', attrs={'class': 'sc-kJdAmE jHNBWQ'}).get_text()

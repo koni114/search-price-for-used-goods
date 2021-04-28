@@ -3,23 +3,27 @@ import common
 import os
 import re
 import pandas as pd
-import datetime
-import pprint
+from gridfs import GridFS
 
 if __name__ == "__main__":
 
     current_dir = os.getcwd()
     print("current_dir : ", current_dir)
     config_info = common.get_yaml_file(file_path=current_dir, file_name="config.yaml", yaml_type="d")
+    logging_info = common.get_yaml_file(file_path=current_dir, file_name="logging.yaml", yaml_type="d")
 
     # logger setting
-    insert_data_logger = common.set_logger(log_file_path='/Users/heojaehun/gitRepo/search-price-for-used-goods/log',
-                                       log_file_name='insertdata.log',
-                                       level='DEBUG')
+    insert_data_logger = common.set_logger(log_file_path=logging_info['bunjang_crawling']['log_file_path'],
+                                           log_file_name=logging_info['bunjang_crawling']['log_file_name'],
+                                           level=logging_info['bunjang_crawling']['log_level'])
 
     mongodb_URI = config_info['mongodb_uri']
     mongodb_db = config_info['mongodb_db']
-    client = MongoClient(mongodb_URI)
+    try:
+        client = MongoClient(mongodb_URI)
+    except Exception as e:
+        insert_data_logger.error("MongoClient connection error!")
+        insert_data_logger.error(e)
 
     db = client[mongodb_db]
 
@@ -28,7 +32,7 @@ if __name__ == "__main__":
 
     #- get file list
     if not os.path.isdir(bunjang_data_path):
-        insert_data_logger("there is not directory ! : directory path -->" + bunjang_data_path)
+        insert_data_logger.error("there is not directory ! : directory path -->" + bunjang_data_path)
     else:
         file_list = os.listdir(bunjang_data_path)
 
@@ -37,7 +41,10 @@ if __name__ == "__main__":
         filename = bunjang_csvfile_list[0]
         for filename in bunjang_csvfile_list:
             data = pd.read_csv(os.path.join(bunjang_data_path, filename))
-            data.to_dict('records')
+            data = data.drop('Unnamed: 0', axis=1)
+            db.bunjang.insert_many(data.to_dict('records'))
+
+
 
 
 

@@ -1,0 +1,11 @@
+# level
+bunjang_crawling:
+  log_file_path: /Users/heojaehun/gitRepo/search-price-for-used-goods/log
+  log_file_name: bunjang_crawling.log
+  log_level: DEBUG
+
+insert_data_to_mongoDB:
+  log_file_path: /Users/heojaehun/gitRepo/search-price-for-used-goods/log
+  log_file_name: insert_data_to_mongoDB.log
+  log_level: DEBUG
+
