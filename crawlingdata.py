@@ -4,6 +4,7 @@ from selenium import webdriver
 from bs4 import BeautifulSoup
 import time as t
 from datetime import datetime
+import requests
 
 
 class CrawlingData(object):
@@ -18,6 +19,7 @@ class CrawlingData(object):
 
     def set_crawling_option(self):
         options = Options()
+        options.headless = True  # 이거 크롬창 안띄우는 거에요 메모리 안잡아 먹을라고 새벽에 batch 돌릴거면 이거 키고 하는게 좋을거 같습니다.
         options.add_argument(f'user-agent={self.user_agent}')
         browser = webdriver.Chrome(chrome_options=options, executable_path=self.chrome_path)
         browser.maximize_window()
@@ -33,12 +35,13 @@ class CrawlingData(object):
 
 
 class BunjangCrawlingData(CrawlingData):
-    bunjang_cols = ['transaction_id','category','title', 'price',
-                    'time', 'main_contents', 'like', 'click_number','seller_location',
-                    'seller_review_num','item_image', 'user_info', 'data_collect_time']
+    bunjang_cols = ['transaction_id', 'category', 'title', 'price',
+                    'time', 'main_contents', 'like', 'click_number', 'seller_location',
+                    'seller_review_num', 'item_image', 'user_info', 'data_collect_time']
 
     def __init__(self, user_agent, chrome_path, root_url, search_window_xpath,
                  search_window_xpath_icon_xpath, page_num, logger):
+        # 자식 클래스에서 부모클래스의 내용을 사용하고 싶을경우 사용
         super(BunjangCrawlingData, self).__init__(user_agent,
                                                   chrome_path,
                                                   root_url,
@@ -52,26 +55,33 @@ class BunjangCrawlingData(CrawlingData):
         current_time = t.strftime('%y%m%d%H%M%S')
         t.sleep(3)  # - 페이지를 넘길 때, term을 주어야 데이터를 정상적이게 가져 올 수 있음
         browser.find_elements_by_class_name("sc-iFUGim")[transaction_num].click()  # - 하나의 제품 이미지 클릭
-        transaction_id = product_meta_code + "_" + current_time                                        # transcation_id
-        category = product_meta_code                                                             # catgory
+        transaction_id = product_meta_code + "_" + current_time  # transcation_id
+        category = product_meta_code  # catgory
         t.sleep(3)
         soup = BeautifulSoup(browser.page_source, "lxml")  # - page source parser를 통해 source 가져옴
-        title = soup.find('div', attrs={'class': 'sc-fIIFii iptAEp'}).get_text()                 # title
-        price = soup.find('div', attrs={'class': 'sc-frudsx kGPCet'}).get_text()                 # price
-        time = soup.find_all('div', attrs={'class': 'sc-fQfKYo kctXcC'})[2].get_text()           # time
-        main_contents = soup.find('div', attrs={'class': 'sc-huKLiJ bfuCPC'}).get_text()         # main_contents
-        like = soup.find_all('div', attrs={'class': 'sc-fQfKYo kctXcC'})[0].get_text()           # like
-        click_number = soup.find_all('div', attrs={'class': 'sc-fQfKYo kctXcC'})[1].get_text()   # click number
+        images = soup.find_all('img', attrs={'class': 'sc-jklikK'})
+
+        title = soup.find('div', attrs={'class': 'sc-fIIFii iptAEp'}).get_text()  # title
+        price = soup.find('div', attrs={'class': 'sc-frudsx kGPCet'}).get_text()  # price
+        time = soup.find_all('div', attrs={'class': 'sc-fQfKYo kctXcC'})[2].get_text()  # time
+        main_contents = soup.find('div', attrs={'class': 'sc-huKLiJ bfuCPC'}).get_text()  # main_contents
+        like = soup.find_all('div', attrs={'class': 'sc-fQfKYo kctXcC'})[0].get_text()  # like
+        click_number = soup.find_all('div', attrs={'class': 'sc-fQfKYo kctXcC'})[1].get_text()  # click number
         try:
-            seller_location = soup.find('div', attrs={'class': 'sc-kJdAmE jHNBWQ'}).get_text()   # seller_location
+            seller_location = soup.find('div', attrs={'class': 'sc-kJdAmE jHNBWQ'}).get_text()  # seller_location
         except:
             seller_location = soup.find('div', attrs={'class': 'sc-kJdAmE jVepRm'}).get_text()
-        seller_review_num = soup.find('div', attrs={'class': "sc-kBMPsl ivBHfZ"}).get_text()     # seller_review_num
+        seller_review_num = soup.find('div', attrs={'class': "sc-kBMPsl ivBHfZ"}).get_text()  # seller_review_num
 
         ## item_image ##
+        for idx, image in enumerate(images):
+            image_url = image['src']
+            image_res = requests.get(image_url)
 
+            with open('./data/img/' + transaction_id + '_{}.jpg'.format(idx + 1), 'wb') as f:
+                f.write(image_res.content)
         ################
-        user_info = soup.find('div', attrs={'class': "sc-biNVYa bNKxkj"}).get_text()             # user_info
+        user_info = soup.find('div', attrs={'class': "sc-biNVYa bNKxkj"}).get_text()  # user_info
         data_collect_time = str(datetime.strftime(datetime.strptime(current_time, "%y%m%d%H%M%S"), "%y-%m-%d %H:%M:%S"))
 
         bunjang_data = [transaction_id, category, title, price,
